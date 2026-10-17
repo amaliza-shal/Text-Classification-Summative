@@ -1,0 +1,9 @@
+{
+  "model": "E0_majority",
+  "split": "test",
+  "accuracy": 0.0911,
+  "macro_precision": 0.0065,
+  "macro_recall": 0.0714,
+  "macro_f1": 0.0119,
+  "weighted_f1": 0.0152
+}

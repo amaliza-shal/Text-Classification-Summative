@@ -1,0 +1,15 @@
+model,split,accuracy,macro_precision,macro_recall,macro_f1,weighted_f1
+E6_afroxlmr_mini,val,0.6426,0.4478,0.4687,0.4452,0.6271
+E6_afroxlmr_mini,test,0.6696,0.4049,0.4493,0.3905,0.6342
+E0_majority,val,0.2369,0.0169,0.0714,0.0274,0.0908
+E0_majority,test,0.0911,0.0065,0.0714,0.0119,0.0152
+E1_tfidf_logreg,val,0.7805,0.643,0.5515,0.5789,0.7709
+E1_tfidf_logreg,test,0.6907,0.5669,0.4595,0.4109,0.657
+E2_tfidf_logreg_balanced,val,0.7898,0.6638,0.6506,0.6464,0.7843
+E2_tfidf_logreg_balanced,test,0.719,0.6794,0.5256,0.4872,0.6988
+E3_char_tfidf_svm_balanced,val,0.7898,0.7756,0.747,0.7365,0.7887
+E3_char_tfidf_svm_balanced,test,0.761,0.6544,0.6104,0.5767,0.7534
+E4_bilstm_random,val,0.7028,0.6031,0.6525,0.6162,0.7048
+E4_bilstm_random,test,0.6291,0.5605,0.4884,0.4674,0.648
+E5_bilstm_w2v,val,0.7363,0.6328,0.7291,0.6651,0.7401
+E5_bilstm_w2v,test,0.6739,0.5911,0.5925,0.5449,0.69

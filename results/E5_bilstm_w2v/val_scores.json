@@ -1,0 +1,9 @@
+{
+  "model": "E5_bilstm_w2v",
+  "split": "val",
+  "accuracy": 0.7363,
+  "macro_precision": 0.6328,
+  "macro_recall": 0.7291,
+  "macro_f1": 0.6651,
+  "weighted_f1": 0.7401
+}

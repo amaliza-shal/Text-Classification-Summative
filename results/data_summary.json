@@ -1,0 +1,72 @@
+{
+  "train_raw": {
+    "rows": 17014,
+    "too_short": 0,
+    "conflicting_label_rows": 1453,
+    "duplicate_rows": 8098,
+    "unique": 7463
+  },
+  "test_raw": {
+    "rows": 4254,
+    "too_short": 4,
+    "conflicting_label_rows": 0,
+    "duplicate_rows": 791,
+    "unique": 3459,
+    "also_in_train": 3
+  },
+  "sizes": {
+    "train": 6716,
+    "val": 747,
+    "test": 3456
+  },
+  "class_counts": {
+    "train": {
+      "politics": 1590,
+      "sport": 877,
+      "economy": 998,
+      "health": 975,
+      "entertainment": 895,
+      "history": 199,
+      "technology": 135,
+      "tourism": 30,
+      "culture": 69,
+      "fashion": 34,
+      "religion": 401,
+      "environment": 34,
+      "education": 104,
+      "relationship": 375
+    },
+    "val": {
+      "politics": 177,
+      "sport": 97,
+      "economy": 111,
+      "health": 108,
+      "entertainment": 100,
+      "history": 22,
+      "technology": 15,
+      "tourism": 3,
+      "culture": 8,
+      "fashion": 4,
+      "religion": 44,
+      "environment": 4,
+      "education": 12,
+      "relationship": 42
+    },
+    "test": {
+      "politics": 315,
+      "sport": 744,
+      "economy": 174,
+      "health": 272,
+      "entertainment": 774,
+      "history": 8,
+      "technology": 103,
+      "tourism": 76,
+      "culture": 136,
+      "fashion": 90,
+      "religion": 255,
+      "environment": 100,
+      "education": 70,
+      "relationship": 339
+    }
+  }
+}

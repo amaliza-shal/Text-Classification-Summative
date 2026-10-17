@@ -1,0 +1,9 @@
+{
+  "model": "E4_bilstm_random",
+  "split": "test",
+  "accuracy": 0.6291,
+  "macro_precision": 0.5605,
+  "macro_recall": 0.4884,
+  "macro_f1": 0.4674,
+  "weighted_f1": 0.648
+}

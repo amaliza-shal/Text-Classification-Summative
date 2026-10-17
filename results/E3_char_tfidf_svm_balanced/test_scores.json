@@ -1,0 +1,9 @@
+{
+  "model": "E3_char_tfidf_svm_balanced",
+  "split": "test",
+  "accuracy": 0.761,
+  "macro_precision": 0.6544,
+  "macro_recall": 0.6104,
+  "macro_f1": 0.5767,
+  "weighted_f1": 0.7534
+}

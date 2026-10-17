@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kinyarwanda News Topic Classification</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm; }
+  body { font-family: "Times New Roman", Georgia, serif; font-size: 11pt; line-height: 1.45; color: #111; max-width: 820px; margin: auto; }
+  h1 { font-size: 18pt; text-align: center; margin-bottom: 4px; }
+  .sub { text-align: center; font-size: 10.5pt; margin-bottom: 14px; }
+  h2 { font-size: 13pt; margin: 18px 0 6px; border-bottom: 1px solid #999; padding-bottom: 2px; }
+  h3 { font-size: 11.5pt; margin: 12px 0 4px; }
+  p { margin: 5px 0; text-align: justify; }
+  table { border-collapse: collapse; margin: 8px auto; font-size: 9.5pt; }
+  th, td { border: 1px solid #888; padding: 3px 7px; text-align: left; }
+  th { background: #eee; }
+  td.n { text-align: right; }
+  .links { border: 1px solid #888; padding: 6px 10px; font-size: 10pt; margin: 10px 0; }
+  .abstract { font-size: 10.5pt; margin: 0 20px; }
+  figure { text-align: center; margin: 10px 0; page-break-inside: avoid; }
+  figure img { max-width: 100%; }
+  figcaption { font-size: 9.5pt; font-style: italic; }
+  .caption { text-align: center; font-size: 9.5pt; font-style: italic; }
+  ol.refs li { font-size: 9.5pt; margin-bottom: 3px; }
+  code { font-family: Consolas, monospace; font-size: 9.5pt; }
+</style>
+</head>
+<body>
+
+<h1>Kinyarwanda News Topic Classification:<br>Baselines, Recurrent Models and African-Language Transformers on a Deduplicated KINNEWS</h1>
+<div class="sub">[[YOUR FULL NAME]] &middot; African Leadership University &middot; a.mihigo1@alustudent.com</div>
+
+<div class="links">
+<b>GitHub repository:</b> https://github.com/amaliza-shal/Text-Classification-Summative<br>
+<b>Demo video:</b> [[VIDEO_LINK]]<br>
+<b>Live system:</b> [[SPACE_LINK]]
+</div>
+
+<h2>1. Abstract</h2>
+<p class="abstract">We build a topic classifier for Kinyarwanda news articles using the KINNEWS corpus (14 topics). An audit of the official release showed that 55% of the training rows are duplicates, that 1,453 rows give the same article two different labels, and that half of the test set comes from websites that never appear in training. After deduplication, 6,716 / 747 / 3,456 articles remain for training, validation and testing. We compare eight experiments: majority-class and TF-IDF baselines, character n-gram features, a BiLSTM with attention using random or Word2Vec embeddings, and two fine-tuned multilingual Transformers (AfroXLMR-mini and the mMiniLM model it was adapted from). A character 2-5-gram linear SVM gives the best test results (76.1% accuracy, 0.577 macro-F1). Word2Vec initialisation improves the BiLSTM by 8 macro-F1 points, but it does not beat the linear model, and the Transformers, trained on a laptop CPU with 128-token inputs, reach at most 67.0% accuracy and 0.390 macro-F1 and prove very sensitive to the learning rate. Error analysis shows that the source website is the largest single factor (0.89 accuracy on a seen website against 0.60-0.68 on unseen ones), and that many remaining errors come from inconsistent category definitions between websites. We also show that accuracies close to the published ~88% are only reached when the evaluation split contains duplicates of training articles.</p>
+
+<h2>2. Introduction</h2>
+<p>Kinyarwanda is a Bantu language and one of the official languages of Rwanda. Like most African languages it is under-represented in NLP: Joshi et al. (2020) place the large majority of the world's languages, including most African ones, in the groups with almost no labelled data. Rwandan news websites publish a lot of Kinyarwanda text every day, but tools for organising it are mostly built for English or French.</p>
+<p>We work on <b>news topic classification</b>: given the title and body of a Kinyarwanda article, predict one of 14 topics (politics, sport, economy, health, entertainment, history, technology, tourism, culture, fashion, religion, environment, education and relationship). A working classifier is useful for newsrooms that tag and route articles, for archives that need to index Kinyarwanda content, and for researchers who need labelled data for other tasks. The task is also a good test bed for low-resource NLP. Kinyarwanda is agglutinative, so a single stem appears with many prefixes and suffixes, the spelling is not fully standardised, and the labelled data is small and very unbalanced.</p>
+<p><b>Objective.</b> Build and deploy a Kinyarwanda topic classifier. Along the way we answer four questions: (1) How reliable is the benchmark data, and how should it be evaluated? (2) Which features suit Kinyarwanda morphology best, words or character n-grams? (3) Do neural models (a BiLSTM with Word2Vec, and fine-tuned Transformers) improve on a well-tuned linear baseline? (4) Does a Transformer adapted to African languages do better than the same architecture without that adaptation?</p>
+
+<h2>3. Related Work</h2>
+<p><b>Kinyarwanda text classification.</b> Niyongabo et al. (2020) released KINNEWS and KIRNEWS, the first news classification datasets for Kinyarwanda and Kirundi. They report about 88.5% accuracy for TF-IDF + SVM and for a BiGRU with Word2Vec embeddings on KINNEWS, and they study cross-lingual transfer between the two languages. Other labelled Kinyarwanda resources include the sentiment data in AfriSenti (Muhammad et al., 2023). MasakhaNEWS (Adelani et al., 2023) provides news topic classification for 16 African languages (Kirundi among them, but not Kinyarwanda) and shows that pretrained African-language models do well on this kind of task.</p>
+<p><b>Text representations.</b> Linear classifiers over TF-IDF n-grams remain strong baselines for topic classification. Word embeddings such as Word2Vec (Mikolov et al., 2013) give dense, transferable word representations. Recurrent networks such as LSTMs (Hochreiter &amp; Schmidhuber, 1997) can read the word order, and attention pooling (Bahdanau et al., 2015; Yang et al., 2016) lets a model weight the most informative words. Pretrained Transformer encoders such as BERT (Devlin et al., 2019) and the multilingual XLM-R (Conneau et al., 2020) are now the standard for most classification tasks.</p>
+<p><b>Models for African languages.</b> Multilingual models cover African languages poorly. AfriBERTa (Ogueji et al., 2021) was pretrained only on African languages. AfroXLMR (Alabi et al., 2022) instead continues the masked-language-model training of XLM-R-type models on 17 African languages, including Kinyarwanda. KinyaBERT (Nzeyimana &amp; Niyongabo Rubungo, 2022) adds an explicit morphological analyser for Kinyarwanda. Small versions of these models, such as AfroXLMR-mini, built on the distilled mMiniLMv2 (Wang et al., 2021), make fine-tuning possible on modest hardware.</p>
+<p><b>Existing systems and the gap.</b> The published KINNEWS results come from classical and recurrent models trained on the release as it is. On the Hugging Face Hub there are also several recent community models fine-tuned on KINNEWS (for example henryparfait/kinnews-topic-classifier and Seziberagabriel/kinyarwanda-news-classifier). Some of them also remove duplicates, but their model cards report a single score and don't look at where the errors come from. Duplicated data is known to inflate scores (Lee et al., 2022). What we add is (i) an explanation of the gap between the published ~88% and deduplicated results, (ii) the observation that half of the test set comes from news websites never seen in training, and how much that costs every model, (iii) a matched comparison of an African-adapted Transformer with the model it started from, and (iv) an error analysis showing that many remaining errors come from websites defining categories differently.</p>
+
+<h2>4. Dataset and Data Preparation</h2>
+<h3>4.1 Source and categories</h3>
+<p>KINNEWS (Niyongabo et al., 2020; MIT licence) contains real news articles collected from 15 Rwandan news websites and 5 newspapers that publish in Kinyarwanda. The publishers originally used 48 categories. The dataset authors grouped them into 14, and two native-speaker annotators with linguistics degrees assigned each article a topic from its title and content, dropping articles they were unsure about. We use the raw version from the Hugging Face Hub (title, body, URL and labels, original casing) with its official split of 17,014 training and 4,254 test rows. No synthetic or machine-generated data is used.</p>
+<h3>4.2 Data quality audit</h3>
+<p>Before training we checked the data for duplicates, label conflicts, encoding errors and the source of each article. The results (Table 1) shaped every later step.</p>
+<table>
+<tr><th></th><th>train</th><th>test</th></tr>
+<tr><td>rows in the release</td><td class="n">17,014</td><td class="n">4,254</td></tr>
+<tr><td>rows with &lt; 10 words</td><td class="n">0</td><td class="n">4</td></tr>
+<tr><td>rows whose article appears under two different labels</td><td class="n">1,453</td><td class="n">0</td></tr>
+<tr><td>exact duplicate rows</td><td class="n">8,098</td><td class="n">791</td></tr>
+<tr><td>test articles also in train</td><td class="n">&ndash;</td><td class="n">3</td></tr>
+<tr><td><b>unique articles kept</b></td><td class="n"><b>7,463</b></td><td class="n"><b>3,456</b></td></tr>
+</table>
+<div class="caption">Table 1. Effect of the cleaning steps on the official KINNEWS splits.</div>
+<p>More than half of the training rows are duplicates, and one article appears 80 times. About 70 articles contain mojibake, for example <code>â€™</code> for <code>’</code>, from UTF-8 text decoded as Latin-1. The most important finding concerns sources: training articles come from 18 websites, but the test set comes from only three, muhabura.rw (46%), igihe.com (35%) and kigalipost.com (19%), and <b>the last two never appear in training</b>. So most of the test set measures how well a model transfers to a new news outlet, with its own writing style and its own idea of what each category means.</p>
+<h3>4.3 Preprocessing and splits</h3>
+<p>The input is <code>title . body</code>. For the TF-IDF, Word2Vec and BiLSTM models we fix the mojibake, apply Unicode NFKC normalisation, lowercase, remove URLs and numbers, and replace apostrophes and punctuation with spaces. The last step matters for Kinyarwanda: elided forms such as <i>n'abana</i> ("and the children") become <i>n abana</i>, so the stem <i>abana</i> gets the same token as when it stands alone. For the Transformers we only apply the encoding fixes and URL removal, because their subword tokenizer was trained on cased, punctuated text. We drop articles with fewer than 10 words, all rows with conflicting labels, and exact duplicates, and we remove test articles that also appear in training. A stratified 10% of the training set becomes the validation set, giving <b>6,716 train / 747 validation / 3,456 test</b> articles. All model selection uses the validation set only.</p>
+<h3>4.4 Characteristics</h3>
+<p>The classes are very unbalanced (Figure 1). Politics has 1,590 training articles, while tourism, fashion and environment have 30-34 each, and the test set has a different mix (for example 90 fashion test articles against 34 in training). The median article has about 300 words. The training vocabulary has 139,883 word types, 55% of which occur only once, and 5.1% of test tokens are not seen in training. Both figures reflect Kinyarwanda's rich morphology.</p>
+<figure><img src="../results/figures/class_distribution.png" style="width:88%"><figcaption>Figure 1. Share of each topic in the train, validation and test splits after deduplication.</figcaption></figure>
+
+<h2>5. Methodology</h2>
+<p>Each experiment changes one thing compared to the one before it (Table 2). All models use the same splits, the same metrics code and seed 42.</p>
+<table>
+<tr><th>ID</th><th>Model</th><th>Question</th></tr>
+<tr><td>E0</td><td>Majority class</td><td>Lowest possible score</td></tr>
+<tr><td>E1</td><td>Word 1-2-gram TF-IDF + logistic regression</td><td>Baseline</td></tr>
+<tr><td>E2</td><td>E1 + balanced class weights</td><td>Does reweighting help rare topics?</td></tr>
+<tr><td>E3</td><td>Character 2-5-gram TF-IDF + linear SVM (balanced)</td><td>Do sub-word features suit the morphology better?</td></tr>
+<tr><td>E4</td><td>BiLSTM + attention, random embeddings</td><td>Does a sequence model beat bag-of-words?</td></tr>
+<tr><td>E5</td><td>BiLSTM + attention, Word2Vec embeddings</td><td>Do pretrained embeddings help with little data?</td></tr>
+<tr><td>E6</td><td>AfroXLMR-mini, fine-tuned (lr 5e-5)</td><td>Does an African-language Transformer do better?</td></tr>
+<tr><td>E7</td><td>mMiniLM (the model E6 was adapted from), lr 5e-5</td><td>Does the African-language adaptation itself matter?</td></tr>
+<tr><td>E8</td><td>E6 with learning rate 1.5e-4</td><td>Was E6 undertrained?</td></tr>
+</table>
+<div class="caption">Table 2. Experiments and the question each one answers.</div>
+<p><b>Baselines (E1-E3).</b> TF-IDF with sublinear term frequency. E1/E2 use word unigrams and bigrams (min. document frequency 2, max. 200k features) with logistic regression (C = 10). E2 weights each class inversely to its frequency. E3 uses character 2-5-grams inside word boundaries (max. 300k features) with a linear SVM (C = 0.5). Character n-grams let related forms such as <i>abanyeshuri</i>, <i>abanyeshuli</i> and <i>umunyeshuri</i> share features. E1 is our reference baseline because it is simple and well understood, and it is the type of classical model Niyongabo et al. (2020) report.</p>
+<p><b>Word2Vec.</b> Skip-gram embeddings (Mikolov et al., 2013) trained on the training split only: 100 dimensions, window 5, 10 negative samples, 10 epochs, min. count 2, giving 63k words. Their nearest neighbours capture spelling variants (<i>kiliziya</i> "church" &rarr; <i>gatolika, gaturika, gatulika</i>) and topical relations (<i>abanyeshuri</i> "students" &rarr; <i>abarimu</i> "teachers", <i>mashuri</i> "schools").</p>
+<p><b>BiLSTM with attention (E4, E5).</b> Each article is truncated to 400 word tokens (the median length is about 300) and mapped to ids, with words seen fewer than twice mapped to UNK. The tokens pass through a 100-d embedding layer (random in E4, Word2Vec in E5), dropout 0.4, and a one-layer bidirectional LSTM with 128 units per direction. Additive attention scores each hidden state; the softmax-weighted sum gives a 256-d document vector, which goes through dropout and a linear layer to 14 logits. Training uses Adam (lr 2e-3), batch size 32, 12 epochs, gradient clipping at 1.0 and class-weighted cross-entropy. We keep the epoch with the best validation macro-F1.</p>
+<p><b>Transformers (E6-E8).</b> AfroXLMR-mini (Alabi et al., 2022) is a 12-layer, 384-dimensional encoder, created by continuing the masked-language-model training of mMiniLMv2 (Wang et al., 2021), a model distilled from XLM-R Large (Conneau et al., 2020), on 17 African languages including Kinyarwanda. E7 fine-tunes the original mMiniLMv2 with identical settings, so any difference comes from the African-language adaptation. Text is split into SentencePiece subwords (250k vocabulary), and the <code>&lt;s&gt;</code> representation goes through a classification head. We fine-tune with the Hugging Face Trainer (Wolf et al., 2020): 128 tokens, batch size 16, 4 epochs, AdamW with 10% warm-up and linear decay, weight decay 0.01, class-weighted loss, and the best epoch chosen on validation. Because all training ran on a laptop CPU (Intel Core 7 240H, 8 GB RAM), we froze the word-embedding matrix (96M of the 118M parameters) and limited inputs to 128 tokens. With 256 tokens and trainable embeddings, a single epoch took more than two hours and ran out of memory.</p>
+<p><b>Metrics.</b> Accuracy, per-class precision, recall and F1, their macro averages, and weighted F1. <b>Macro-F1 is the main metric</b> because the classes are very unbalanced: it gives every topic the same weight, whereas accuracy is dominated by the five large classes.</p>
+
+<h2>6. Experiments and Results</h2>
+<table>
+<tr><th>ID</th><th>Model</th><th>Accuracy</th><th>Macro P</th><th>Macro R</th><th>Macro F1</th><th>Weighted F1</th><th>Val. macro F1</th></tr>
+<tr><td>E0</td><td>Majority class</td><td class="n">0.091</td><td class="n">0.006</td><td class="n">0.071</td><td class="n">0.012</td><td class="n">0.015</td><td class="n">0.027</td></tr>
+<tr><td>E1</td><td>Word TF-IDF + LogReg</td><td class="n">0.691</td><td class="n">0.567</td><td class="n">0.460</td><td class="n">0.411</td><td class="n">0.657</td><td class="n">0.579</td></tr>
+<tr><td>E2</td><td>E1 + class weights</td><td class="n">0.719</td><td class="n">0.679</td><td class="n">0.526</td><td class="n">0.487</td><td class="n">0.699</td><td class="n">0.646</td></tr>
+<tr><td>E3</td><td>Char TF-IDF + LinearSVC</td><td class="n"><b>0.761</b></td><td class="n">0.654</td><td class="n"><b>0.610</b></td><td class="n"><b>0.577</b></td><td class="n"><b>0.753</b></td><td class="n"><b>0.736</b></td></tr>
+<tr><td>E4</td><td>BiLSTM, random emb.</td><td class="n">0.629</td><td class="n">0.560</td><td class="n">0.488</td><td class="n">0.467</td><td class="n">0.648</td><td class="n">0.616</td></tr>
+<tr><td>E5</td><td>BiLSTM, Word2Vec emb.</td><td class="n">0.674</td><td class="n">0.591</td><td class="n">0.592</td><td class="n">0.545</td><td class="n">0.690</td><td class="n">0.665</td></tr>
+<tr><td>E6</td><td>AfroXLMR-mini, lr 5e-5</td><td class="n">0.670</td><td class="n">0.405</td><td class="n">0.449</td><td class="n">0.390</td><td class="n">0.634</td><td class="n">0.445</td></tr>
+<tr><td>E7</td><td>mMiniLM, lr 5e-5</td><td colspan="5">stopped after 2.6 epochs: did not learn (validation loss 2.65 &asymp; ln 14)</td><td class="n">0.027</td></tr>
+<tr><td>E8</td><td>AfroXLMR-mini, lr 1.5e-4</td><td colspan="5">stopped after 1 epoch: collapsed to one class (validation loss 2.76)</td><td class="n">0.008</td></tr>
+</table>
+<div class="caption">Table 3. Test-set results (3,456 articles) and best validation macro-F1.</div>
+<p><b>Reweighting (E1 &rarr; E2).</b> Class weights raise macro-F1 from 0.41 to 0.49. Without them, the model never predicts fashion or environment correctly (F1 = 0), because 34 examples can't outweigh the large classes in the loss.</p>
+<p><b>Characters vs. words (E2 &rarr; E3).</b> Character n-grams give the largest single improvement (macro-F1 0.49 &rarr; 0.58, accuracy 0.72 &rarr; 0.76). With 55% of word types occurring only once, word features are sparse, while character n-grams share information across inflected forms and spelling variants. This agrees with the strong SVM results of Niyongabo et al. (2020).</p>
+<p><b>Embeddings for the BiLSTM (E4 &rarr; E5).</b> Word2Vec initialisation adds 8 macro-F1 points and reaches its best validation score earlier (epoch 7 instead of 11). With 6.7k documents, most words appear too rarely to learn good embeddings from the classification signal alone. Both BiLSTMs overfit quickly: training loss falls to 0.02 while validation F1 levels off (Figure 2). Still, the BiLSTM does not beat the character-n-gram SVM, although it does better on the four smallest classes (Section 7). A more complex model is not automatically better when the data is small.</p>
+<figure><img src="../results/figures/bilstm_curves.png" style="width:78%"><figcaption>Figure 2. BiLSTM training loss and validation macro-F1 per epoch.</figcaption></figure>
+<p><b>Transformers (E6-E8).</b> AfroXLMR-mini at lr 5e-5 (E6) learned slowly but steadily (validation macro-F1 0.21, 0.32, 0.41, 0.45 over four epochs) and was still improving when training ended. On the test set it reaches 67.0% accuracy, close to the BiLSTM, but only 0.390 macro-F1. It does well on the large topics (sport 0.92, entertainment 0.79, relationship 0.78 F1), but it never predicts culture or fashion and almost never tourism or environment. Its matched control, mMiniLM without the African-language training (E7), did not learn at all at the same learning rate: after two epochs its validation loss was still at chance level (2.65 &asymp; ln 14) and macro-F1 was 0.03. So the African-language adaptation made AfroXLMR-mini easier to fine-tune on Kinyarwanda, but the two were never compared at a setting where both work. Raising the learning rate to 1.5e-4 (E8) did not help: the model collapsed to a single class in the first epoch (validation macro-F1 0.008). We stopped E7 and E8 early because of time and report their validation curves. Under our compute limits (128 tokens, about 50 words, frozen embeddings, 4 epochs) the Transformers are undertrained and very sensitive to the learning rate. The TF-IDF model reads the whole article, and here it is both faster and more accurate.</p>
+<h3>6.1 Comparison with published results</h3>
+<p>Niyongabo et al. (2020) report about 88.5% accuracy, against our best of 76.1%. To understand the difference we trained a word-unigram TF-IDF SVM, similar to theirs, and evaluated it three ways. On a random 9:1 split of the <i>raw</i> training data it reaches <b>89.2%</b> accuracy, but 57% of the held-out articles in that split also appear in the training part. On the same kind of split after deduplication it reaches 77.8%, and on the official test set 70-73%. So scores near 88% are only reached when duplicates leak between training and evaluation. We can't tell exactly how the original numbers were computed, but our results use the stricter protocol and should not be compared directly with the published ones.</p>
+
+<h2>7. Error Analysis and Discussion</h2>
+<figure><img src="../results/figures/per_class_f1.png" style="width:95%"><figcaption>Figure 3. Test F1 per class for each model, with classes sorted by training size.</figcaption></figure>
+<p><b>Rare classes.</b> F1 broadly follows training size (Figure 3). Sport (0.96), entertainment (0.85), religion and relationship (0.82) are easy, while history (0.12) and education (0.11) are the hardest. The Word2Vec BiLSTM beats the SVM on the four smallest classes (culture 0.45 vs 0.31, fashion 0.67 vs 0.63, environment 0.46 vs 0.33, tourism 0.55 vs 0.50): dense embeddings let it generalise from very few examples, while the SVM wins on the frequent classes.</p>
+<p><b>Source shift is the largest factor.</b> The SVM reaches 0.89 accuracy on muhabura.rw, which also appears in training, but only 0.68 on igihe.com and 0.60 on kigalipost.com, which do not. The BiLSTM is just as good on the unseen websites (0.67 / 0.59) but much worse on the seen one (0.71). So part of the SVM's lead comes from website-specific wording that doesn't transfer to new outlets.</p>
+<p><b>Inconsistent category definitions.</b> Reading the most frequent confusions shows that many "errors" are disagreements about what a category means. 13 of the 41 education &rarr; relationship errors are dream interpretations (<i>Ibisobanuro by'inzozi&hellip;</i>) or name meanings, which a test website files under education but which never appear under that label in training. Most of the 27 health &rarr; politics errors are crime and accident reports (murders, arrests by the Rwanda Investigation Bureau) that one test website labels <i>health</i>. Even a perfect model of the training labels would get these wrong.</p>
+<p><b>Overlapping topics.</b> culture &rarr; history is the most frequent confusion (48 articles). Many of these describe the Rwandan monarchy or traditional ceremonies, and some titles begin with <i>Amateka</i> ("history"). Fashion &rarr; entertainment errors are mostly celebrity stories. These pairs genuinely overlap, and a single label per article can't express that.</p>
+<p><b>Length and vocabulary.</b> Accuracy is about 0.79 for articles up to 300 words, but 0.68 for 500-1,000 words and 0.53 above 1,000. Long articles tend to mix topics, and the neural models also truncate them. Unseen words matter less than we expected: misclassified articles contain only slightly more out-of-vocabulary words than correct ones (5.1% vs 4.5%).</p>
+<p><b>What the model gets right.</b> Articles with clear topic vocabulary are classified reliably, for example football reports (<i>Amavubi, APR FC, umukino</i>), church news (<i>Kiliziya, Paruwasi</i>) and tourism rankings (<i>abakerarugendo</i> "tourists"), even for rare classes. The Transformer shows the source effect most strongly: 0.85 accuracy on muhabura.rw but only 0.51-0.52 on the two unseen websites, probably because it reads only the opening of each article and has learned less from its limited training.</p>
+<p>This matches what others have found. Data quality and duplication can inflate reported scores (Lee et al., 2022). Small, unbalanced, cross-source data limits all model families, and sub-word information is important for morphologically rich languages, which is the motivation for KinyaBERT's morphology-aware design (Nzeyimana &amp; Niyongabo Rubungo, 2022).</p>
+
+<h2>8. Deployment</h2>
+<p>The final system is a Gradio web application (<code>app.py</code>) deployed on Hugging Face Spaces ([[SPACE_LINK]]). The user pastes Kinyarwanda text and chooses a model: the fine-tuned Transformer, the character-n-gram SVM or the BiLSTM. The app applies the same preprocessing functions used in training (<code>src/preprocess.py</code>), runs the saved model through <code>src/inference.py</code>, and shows the predicted topic in English and Kinyarwanda with a confidence bar, the top five topics, and the predictions of all models side by side. A warning appears for very short inputs and for low-confidence predictions. The app includes examples from the test set with their true labels, so both correct and incorrect predictions can be demonstrated, and Results and About tabs explain the models and their limitations. It runs locally with <code>python app.py</code>.</p>
+
+<h2>9. Limitations and Future Work</h2>
+<p><b>Data.</b> After deduplication there are only 6.7k training articles, and six topics have fewer than 200. The test labels follow each website's own category definitions, so part of the remaining error is label noise, and each article gets a single topic even when topics overlap. <b>Models.</b> Because of the CPU-only setup, the Transformers see only the first 128 subword tokens (about 50 words, while the median article has about 300) and their embeddings are frozen. With a GPU, full fine-tuning on 512-token inputs, or splitting long articles into chunks, could change the ranking. <b>Evaluation.</b> Each configuration was run once with one seed and without a hyperparameter search, so differences below about one macro-F1 point should not be over-interpreted. The SVM's confidence scores in the app are not calibrated probabilities. <b>Future work.</b> Next steps would be longer-context and morphology-aware models (KinyaBERT), training with more news sources, or adapting to new sources with their unlabelled text, multi-label topics or merged overlapping categories, and a proper learning-rate search (between 5e-5 and 1.5e-4) so that AfroXLMR-mini and mMiniLM can be compared at a setting where both learn.</p>
+
+<h2>10. Conclusion</h2>
+<p>We built and deployed a Kinyarwanda news topic classifier and compared eight experiments on a cleaned version of KINNEWS. The most important result is about the data, not the models: half of the benchmark's training rows are duplicates, and scores near the published ~88% are only reached when duplicates leak into the evaluation. The best model is also the simplest one that handles Kinyarwanda morphology: a character n-gram linear SVM, is the most accurate (76.1% accuracy, 0.577 macro-F1). Class weighting and Word2Vec initialisation give clear gains, but neither a BiLSTM nor CPU-trained small Transformers beat it. Most remaining errors come from source shift and from websites defining categories differently, not from the models misreading the language. What we learned: check the data before modelling, evaluate on splits that look like real use (new sources, no duplicates), and don't assume a bigger model will beat a well-tuned linear baseline when data and compute are limited.</p>
+
+<h2>11. References</h2>
+<ol class="refs">
+<li>Adelani, D. I., et al. (2023). MasakhaNEWS: News topic classification for African languages. In <i>Proceedings of IJCNLP-AACL 2023</i>.</li>
+<li>Alabi, J. O., Adelani, D. I., Mosbach, M., &amp; Klakow, D. (2022). Adapting pre-trained language models to African languages via multilingual adaptive fine-tuning. In <i>Proceedings of COLING 2022</i> (pp. 4336-4349).</li>
+<li>Bahdanau, D., Cho, K., &amp; Bengio, Y. (2015). Neural machine translation by jointly learning to align and translate. In <i>ICLR 2015</i>.</li>
+<li>Conneau, A., et al. (2020). Unsupervised cross-lingual representation learning at scale. In <i>Proceedings of ACL 2020</i> (pp. 8440-8451).</li>
+<li>Devlin, J., Chang, M.-W., Lee, K., &amp; Toutanova, K. (2019). BERT: Pre-training of deep bidirectional Transformers for language understanding. In <i>Proceedings of NAACL-HLT 2019</i> (pp. 4171-4186).</li>
+<li>Hochreiter, S., &amp; Schmidhuber, J. (1997). Long short-term memory. <i>Neural Computation, 9</i>(8), 1735-1780.</li>
+<li>Joshi, P., Santy, S., Budhiraja, A., Bali, K., &amp; Choudhury, M. (2020). The state and fate of linguistic diversity and inclusion in the NLP world. In <i>Proceedings of ACL 2020</i> (pp. 6282-6293).</li>
+<li>Lee, K., Ippolito, D., Nystrom, A., Zhang, C., Eck, D., Callison-Burch, C., &amp; Carlini, N. (2022). Deduplicating training data makes language models better. In <i>Proceedings of ACL 2022</i> (pp. 8424-8445).</li>
+<li>Mikolov, T., Sutskever, I., Chen, K., Corrado, G., &amp; Dean, J. (2013). Distributed representations of words and phrases and their compositionality. In <i>NeurIPS 2013</i>.</li>
+<li>Muhammad, S. H., et al. (2023). AfriSenti: A Twitter sentiment analysis benchmark for African languages. In <i>Proceedings of EMNLP 2023</i>.</li>
+<li>Niyongabo, R. A., Qu, H., Kreutzer, J., &amp; Huang, L. (2020). KINNEWS and KIRNEWS: Benchmarking cross-lingual text classification for Kinyarwanda and Kirundi. In <i>Proceedings of COLING 2020</i> (pp. 5507-5521).</li>
+<li>Nzeyimana, A., &amp; Niyongabo Rubungo, A. (2022). KinyaBERT: A morphology-aware Kinyarwanda language model. In <i>Proceedings of ACL 2022</i> (pp. 5347-5363).</li>
+<li>Ogueji, K., Zhu, Y., &amp; Lin, J. (2021). Small data? No problem! Exploring the viability of pretrained multilingual language models for low-resourced languages. In <i>Proceedings of the 1st Workshop on Multilingual Representation Learning</i> (pp. 116-126).</li>
+<li>Pedregosa, F., et al. (2011). Scikit-learn: Machine learning in Python. <i>Journal of Machine Learning Research, 12</i>, 2825-2830.</li>
+<li>Řehůřek, R., &amp; Sojka, P. (2010). Software framework for topic modelling with large corpora. In <i>Proceedings of the LREC 2010 Workshop on New Challenges for NLP Frameworks</i> (pp. 45-50).</li>
+<li>Wang, W., Bao, H., Huang, S., Dong, L., &amp; Wei, F. (2021). MiniLMv2: Multi-head self-attention relation distillation for compressing pretrained Transformers. In <i>Findings of ACL 2021</i> (pp. 2140-2151).</li>
+<li>Wolf, T., et al. (2020). Transformers: State-of-the-art natural language processing. In <i>Proceedings of EMNLP 2020: System Demonstrations</i> (pp. 38-45).</li>
+<li>Yang, Z., Yang, D., Dyer, C., He, X., Smola, A., &amp; Hovy, E. (2016). Hierarchical attention networks for document classification. In <i>Proceedings of NAACL-HLT 2016</i> (pp. 1480-1489).</li>
+<li>Abid, A., et al. (2019). Gradio: Hassle-free sharing and testing of ML models in the wild. <i>arXiv:1906.02569</i>.</li>
+<li>Hugging Face Hub model and dataset cards (accessed October 2026): Davlan/afro-xlmr-mini; nreimers/mMiniLMv2-L12-H384-distilled-from-XLMR-Large; andreniyongabo/kinnews_kirnews; henryparfait/kinnews-topic-classifier; Seziberagabriel/kinyarwanda-news-classifier. https://huggingface.co</li>
+</ol>
+</body>
+</html>

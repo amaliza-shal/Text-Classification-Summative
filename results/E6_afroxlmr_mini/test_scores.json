@@ -1,0 +1,9 @@
+{
+  "model": "E6_afroxlmr_mini",
+  "split": "test",
+  "accuracy": 0.6696,
+  "macro_precision": 0.4049,
+  "macro_recall": 0.4493,
+  "macro_f1": 0.3905,
+  "weighted_f1": 0.6342
+}

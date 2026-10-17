@@ -1,0 +1,9 @@
+{
+  "model": "E1_tfidf_logreg",
+  "split": "test",
+  "accuracy": 0.6907,
+  "macro_precision": 0.5669,
+  "macro_recall": 0.4595,
+  "macro_f1": 0.4109,
+  "weighted_f1": 0.657
+}
