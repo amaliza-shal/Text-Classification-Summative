@@ -51,7 +51,7 @@
 <p><b>Gap.</b> Several community models fine-tuned on KINNEWS also exist on the Hugging Face Hub (e.g. henryparfait/kinnews-topic-classifier, Seziberagabriel/kinyarwanda-news-classifier), but they report a single score. Duplicated data is known to inflate scores (Lee et al., 2022). This project adds: an explanation of the gap to the published ~88%, an analysis of performance on unseen news websites, a matched test of the African-language Transformer, and an error analysis of where mistakes come from.</p>
 
 <h2>4. Dataset and Data Preparation</h2>
-<p><b>Source.</b> KINNEWS (Niyongabo et al., 2020; MIT licence) contains real articles from 15 Rwandan news websites and 5 newspapers. The authors merged the publishers' 48 categories into 14, and two native-speaker annotators labelled each article. We used the raw version from the Hugging Face Hub (17,014 training and 4,254 test rows). No synthetic data was used.</p>
+<p><b>Source.</b> KINNEWS (Niyongabo et al., 2020; MIT licence) contains real articles from 15 Rwandan news websites and 5 newspapers. The authors merged the publishers' 48 categories into 14, and two native-speaker annotators labelled each article. We used the raw version from the Hugging Face Hub (17,014 training and 4,254 test rows). No synthetic data was used. It suits this project because it is real Kinyarwanda news, labelled by native speakers, and it is the standard benchmark for this task, so results can be compared.</p>
 <p><b>Quality check.</b> We checked the data before training (Table 1):</p>
 <table>
 <tr><th></th><th>train</th><th>test</th></tr>
