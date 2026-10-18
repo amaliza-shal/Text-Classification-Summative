@@ -28,12 +28,15 @@ ICONS = {"politics": "🏛️", "sport": "⚽", "economy": "💰", "health": "�
 
 # shortened excerpts from the KINNEWS test split, with their true labels
 EXAMPLES = {
-    "⚽ Sport": ("Perezida Kagame yakiriye Amavubi muri Village Urugwiro mbere y’uko bakina na Congo. Perezida w’u Rwanda Paul Kagame, yakiriye ikipe y’igihugu, Amavubi, ayaha impamba y’impanuro izayafasha kwitwara neza mu mikino ya CHAN.", "sport"),
-    "💰 Economy": ("Ubukungu bw’isi bwitezweho kuzamuka ku kigero cya 2.5 % muri 2020. Muri iyi raporo izwi nka Global Economic Prospects yashyizwe hanze kuri uyu wa Gatatu, Banki y’Isi ivuga ko izamuka ry’ubukungu mu bihugu byateye imbere rizaganyukaho 1.4 %.", "economy"),
-    "🩺 Health": ("Abamotari bashobora gusabwa kugendana Alcohol bahanaguza muri Casque mu gukumira Coronavirus mu Rwanda.", "health"),
-    "🧳 Tourism": ("U Rwanda ku mwanya wa mbere mu bihugu bizasurwa cyane muri Afurika mu 2020. Uru rutonde rugaragaza ibihugu 30 bifite ibintu bikurura abakerarugendo.", "tourism"),
-    "🌿 Environment": ("Leta yatangiye umushinga wo guhindura amazi ya Nyabarongo urubogobogo. Hatangiye guterwa ubwatsi, amashyamba, imigano.", "environment"),
-    "⛪ Religion": ("Umunyempano Sam Rushimisha yasohoye indirimbo nshya yise ‘Ubutunzi’. Rushimisha Sam ni umukirisitu ukora ivugabutumwa abicishije mu ndirimbo zo kuramya no guhimbaza Imana.", "religion"),
+    "⚽ Sport": ("Umutoza wa Rayon Sports yirukanwe nyuma yo gutsindwa na APR FC . Nyuma y’inama ndende yaraye ihuje Komite nyobozi ya Rayon Sports, yafashe umwanzuro wo gusezerera umunya-Mexique Javier Martinez Espinoza wari umaze amezi atatu ayitoza. Ibi bije nyuma yo kutishimira uburyo uyu mutoza yitwaye mu…", "sport"),
+    "💰 Economy": ("Kigali: Igiciro cya lisansi na mazutu cyazamutse . Ikigo Ngenzuramikorere(RURA) cyatangaje ko igiciro cya lisansi mu Mujyi wa Kigali cyiyongereyeho amafaranga 13 y’u Rwanda naho iya mazutu yiyongeraho 32. Igiciro cy’ibikomoka kuri peteroli mu Rwanda cyaherukaga kuzamuka muri Mutarama aho litiro ya lisansi yageze ku…", "economy"),
+    "🩺 Health": ("Umugore n’umwana we bakize Ebola berekanywe i Goma muri Congo . Abashinzwe ubuzima muri Congo hamwe n’ishami ry’umuryango w’abibumbye ryita ku buzima, muri iki gitondo i Goma muri Congo bagaragaje Eben-Ezer na nyina Espérance bakize Ebola. Iyi ndwara y’icyorezo imaze guhitana abantu barenga 1800 mu…", "health"),
+    "🧳 Tourism": ("Uburyo bushya ushobora gusura ingagi zo mu birunga wibereye mu rugo . Muri iki cyumweru Ikigo cy’Igihugu cy’Iterambere (RDB), ku bufatanye na The Ellen Fund, Dian Fossey Gorilla Fund na Habitat XR, batangaje ko bazanye uburyo abantu bashobora gusura ingagi zo mu birunga bifashishije uburyo…", "tourism"),
+    "💻 Technology": ("Smartphone nziza zihendutse wagura . Izi telefoni zose ni nshya ku isoko, uraza gusangamo izasohotse muri uyu mwaka kandi zifite ikoranabuhanga rijyanye n’igihe ku buryo ku mbuga za internet zigurishirizwaho telefoni ushobora kuzisanga ku mafaranga make kandi zikiri nshya. iPhone SE (2020) Niba ukunda iPhone…", "technology"),
+    "⛪ Religion": ("Kicukiro: Urusengero rwa ADEPR rwafashwe n’inkongi y’umuriro . Urusengero rwa ADEPR ruri aho bita SGM i Gikondo mu Karere ka Kicukiro mu Mujyi wa Kigali rwafashwe n’inkongi y’umuriro rurashya rurakongoka.Ibyo byabaye kuri uyu wa gatatu tariki 14 Werurwe ku gicanunsi. Icyateye iyi nkongi y’uru rusengero…", "religion"),
+    "👗 Fashion": ("Amafoto aryoheye ijisho mu birori by’imideli ya ‘Made in Rwanda’ . Ibi birori by’imideli byari byiswe ‘Week of Fashion’ byateguwe n’ikompanyi Collective Rw ihuriwemo n’abanyamideli bo mu Rwanda bagamije guteza imbere imideli yahangiwe mu Rwanda ndetse no kuzamura ireme ry’abakora uyu mwuga bakamenyekana ku rwego…", "fashion"),
+    # a real health article the final model gets wrong: one short sentence with few topic words
+    "🤔 Tricky case": ("Abamotari bashobora gusabwa kugendana Alcohol bahanaguza muri Casque mu gukumira Coronavirus mu Rwanda.", "health"),
 }
 EXAMPLE_LABELS = {text: label for text, label in EXAMPLES.values()}
 
@@ -96,6 +99,50 @@ CSS = """
 .foot {text-align: center; color: #52514e; font-size: .85rem; margin-top: 30px;}
 .foot a {color: #0077b6; text-decoration: none;}
 div[data-testid="stTabs"] button p {font-size: 1rem; font-weight: 600;}
+
+/* colourful theme */
+[data-testid="stAppViewContainer"] {background:
+   radial-gradient(900px 500px at 0% 0%, rgba(0,161,222,.16), transparent 60%),
+   radial-gradient(800px 500px at 100% 10%, rgba(250,210,1,.14), transparent 60%),
+   radial-gradient(900px 600px at 50% 100%, rgba(32,96,61,.12), transparent 60%), #f4f8fb;}
+[data-testid="stHeader"] {background: transparent;}
+@keyframes rise {from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: none;}}
+@keyframes pop {0% {transform: scale(.6);} 70% {transform: scale(1.12);} 100% {transform: scale(1);}}
+@keyframes float {0%,100% {transform: translateY(0);} 50% {transform: translateY(-10px);}}
+#hero::before, #hero::after {content: ""; position: absolute; border-radius: 50%; filter: blur(2px); animation: float 7s ease-in-out infinite;}
+#hero::before {width: 220px; height: 220px; right: -40px; top: -60px; background: rgba(250,210,1,.28);}
+#hero::after {width: 140px; height: 140px; right: 180px; bottom: -70px; background: rgba(255,255,255,.14); animation-delay: -3s;}
+#hero > * {position: relative; z-index: 1;}
+.stat {transition: transform .2s ease, background .2s ease;}
+.stat:hover {transform: translateY(-3px); background: rgba(255,255,255,.22);}
+.panel, .card, .tile, .step, .mini {animation: rise .45s ease both; transition: transform .2s ease, box-shadow .2s ease;}
+.card:hover, .tile:hover, .step:hover, .mini:hover {transform: translateY(-3px); box-shadow: 0 14px 28px -18px rgba(0,80,120,.45);}
+.panel {border: 1px solid rgba(0,119,182,.14); background: rgba(255,255,255,.9);}
+.result {position: relative; overflow: hidden;}
+.result::before {content: ""; position: absolute; inset: 0 0 auto 0; height: 6px;
+                 background: linear-gradient(90deg, #00a1de, #fad201, #20603d);}
+.result .emoji {display: inline-block; animation: pop .5s ease both; background: #eef7fc; border-radius: 18px; padding: 10px 12px;}
+.bar > div {background: linear-gradient(90deg, #00a1de, #20603d); transition: width .6s ease;}
+.card {border-top: 4px solid #00a1de;}
+.cards > .card:nth-child(2) {border-top-color: #fad201;}
+.cards > .card:nth-child(3) {border-top-color: #20603d;}
+.cards > .card:nth-child(4) {border-top-color: #eb6834;}
+.tile {border-left: 5px solid #00a1de;}
+.tiles > .tile:nth-child(2) {border-left-color: #fad201;}
+.tiles > .tile:nth-child(3) {border-left-color: #20603d;}
+.tiles > .tile:nth-child(4) {border-left-color: #eb6834;}
+.topic-chip {transition: transform .15s ease, background .15s ease;}
+.topic-chip:hover {transform: translateY(-2px); background: #eef7fc;}
+div[data-testid="stTabs"] [role="tablist"] {gap: 6px; background: rgba(255,255,255,.7); padding: 6px; border-radius: 14px;
+    border: 1px solid rgba(0,119,182,.12); margin-top: 14px;}
+div[data-testid="stTabs"] [role="tab"] {border-radius: 10px; padding: 6px 14px;}
+div[data-testid="stTabs"] [role="tab"][aria-selected="true"] {background: linear-gradient(90deg, #0077b6, #00a1de);}
+div[data-testid="stTabs"] [role="tab"][aria-selected="true"] p {color: #fff;}
+div[data-testid="stTabs"] [data-baseweb="tab-highlight"], div[data-testid="stTabs"] [data-baseweb="tab-border"] {display: none;}
+.stTextArea textarea {border-radius: 14px; background: #fff;}
+.stButton > button[kind="primary"] {background: linear-gradient(90deg, #0077b6, #00a1de 55%, #20603d); border: 0;
+    border-radius: 12px; font-weight: 700; box-shadow: 0 10px 22px -12px rgba(0,119,182,.8); transition: transform .15s ease;}
+.stButton > button[kind="primary"]:hover {transform: translateY(-2px);}
 </style>
 """
 
@@ -106,7 +153,7 @@ def get_models():
         if not (MODELS_DIR / f).exists():
             hf_hub_download(MODEL_REPO, f, local_dir=MODELS_DIR)
     from src.inference import BiLSTMModel, SVMModel
-    return {m.name: m for m in (SVMModel(), BiLSTMModel())}
+    return {"Final model · Character SVM (E3)": SVMModel(), "Neural model · BiLSTM (E5)": BiLSTMModel()}
 
 
 @st.cache_data
@@ -122,7 +169,7 @@ def load_results():
 def result_card(scores, model_name, true_label, n_words):
     top = max(scores, key=scores.get)
     p = scores[top]
-    is_svm = model_name.startswith("Char")
+    is_svm = "SVM" in model_name
     parts = [f'<div class="panel result"><div class="emoji">{ICONS[top]}</div><div class="kicker">Predicted topic</div>',
              f'<div class="topic">{top}</div><div class="kin">{KIN_LABELS[top]}</div>',
              f'<div class="bar"><div style="width:{p * 100:.0f}%"></div></div>',
@@ -131,6 +178,9 @@ def result_card(scores, model_name, true_label, n_words):
         ok = true_label == top
         parts.append(f'<span class="pill {"ok" if ok else "bad"}">{"✓ Correct" if ok else "✗ Wrong"} · '
                      f'dataset label: {true_label}</span>')
+        if not ok:
+            rank = sorted(scores, key=scores.get, reverse=True).index(true_label) + 1
+            parts.append(f'<span class="pill warn">The right topic was its #{rank} guess</span>')
     if n_words < 5:
         parts.append('<span class="pill warn">⚠ Very short text</span>')
     elif not is_svm and p < 0.5:
@@ -216,7 +266,7 @@ with tab_classify:
         text = st.text_area("Kinyarwanda news text", key="text", height=210, on_change=clear_example,
                             placeholder="Paste a Kinyarwanda headline or article here...")
         model_name = st.radio("Model", list(models), horizontal=True,
-                              help="E3 is the final model. E5 is shown for comparison.")
+                              help="The final model is the most accurate. The BiLSTM is shown for comparison.")
         st.button("Classify  →", type="primary", width="stretch")
     text = (text or "").strip()
     with right:
@@ -255,7 +305,7 @@ with tab_results:
         tooltip=["Experiment", "Metric", alt.Tooltip("Score:Q", format=".3f")],
     ).properties(height=380, title="Accuracy and macro-F1 on 3,456 test articles")
     st.altair_chart(chart.configure_axis(gridColor="#eef0f2", domainColor="#c9ccd1", labelColor="#52514e",
-                                         titleColor="#52514e").configure_view(stroke=None), width="stretch")
+                                         titleColor="#52514e").configure_view(stroke=None).configure(background="transparent"), width="stretch")
 
     st.markdown("""<div class="cards">
      <div class="card"><div class="t">🔤 Character n-grams win</div><div class="d">Kinyarwanda adds prefixes and suffixes to
@@ -282,7 +332,7 @@ with tab_results:
     )
     labels = grid.mark_text(fontSize=10).encode(
         text=alt.Text("F1:Q", format=".2f"), color=alt.condition("datum.F1 > 0.55", alt.value("#ffffff"), alt.value("#0b0b0b")))
-    st.altair_chart((grid + labels).properties(height=280).configure_view(stroke=None)
+    st.altair_chart((grid + labels).properties(height=280).configure_view(stroke=None).configure(background="transparent")
                     .configure_axis(domainColor="#c9ccd1", labelColor="#52514e", titleColor="#52514e"), width="stretch")
     st.caption("Rare topics are hardest. The BiLSTM (E5) does best on the four smallest ones.")
 
@@ -315,7 +365,7 @@ with tab_data:
     text_lbl = bars.mark_text(align="left", dx=4, color="#52514e", fontSize=11).encode(text="Articles:Q")
     st.altair_chart((bars + text_lbl).properties(height=470, title="Training articles per topic")
                     .configure_axis(gridColor="#eef0f2", domainColor="#c9ccd1", labelColor="#52514e",
-                                    titleColor="#52514e").configure_view(stroke=None), width="stretch")
+                                    titleColor="#52514e").configure_view(stroke=None).configure(background="transparent"), width="stretch")
     st.caption("Source: KINNEWS (Niyongabo et al., 2020), real Rwandan news, MIT licence.")
 
 st.markdown(f'<div class="foot">Data: KINNEWS (Niyongabo et al., 2020) · <a href="{GITHUB}">Code &amp; notebook</a> · '
