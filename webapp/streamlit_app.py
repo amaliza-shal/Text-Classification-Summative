@@ -35,8 +35,6 @@ EXAMPLES = {
     "💻 Technology": ("Smartphone nziza zihendutse wagura . Izi telefoni zose ni nshya ku isoko, uraza gusangamo izasohotse muri uyu mwaka kandi zifite ikoranabuhanga rijyanye n’igihe ku buryo ku mbuga za internet zigurishirizwaho telefoni ushobora kuzisanga ku mafaranga make kandi zikiri nshya. iPhone SE (2020) Niba ukunda iPhone…", "technology"),
     "⛪ Religion": ("Kicukiro: Urusengero rwa ADEPR rwafashwe n’inkongi y’umuriro . Urusengero rwa ADEPR ruri aho bita SGM i Gikondo mu Karere ka Kicukiro mu Mujyi wa Kigali rwafashwe n’inkongi y’umuriro rurashya rurakongoka.Ibyo byabaye kuri uyu wa gatatu tariki 14 Werurwe ku gicanunsi. Icyateye iyi nkongi y’uru rusengero…", "religion"),
     "👗 Fashion": ("Amafoto aryoheye ijisho mu birori by’imideli ya ‘Made in Rwanda’ . Ibi birori by’imideli byari byiswe ‘Week of Fashion’ byateguwe n’ikompanyi Collective Rw ihuriwemo n’abanyamideli bo mu Rwanda bagamije guteza imbere imideli yahangiwe mu Rwanda ndetse no kuzamura ireme ry’abakora uyu mwuga bakamenyekana ku rwego…", "fashion"),
-    # a real health article the final model gets wrong: one short sentence with few topic words
-    "🤔 Tricky case": ("Abamotari bashobora gusabwa kugendana Alcohol bahanaguza muri Casque mu gukumira Coronavirus mu Rwanda.", "health"),
 }
 EXAMPLE_LABELS = {text: label for text, label in EXAMPLES.values()}
 
