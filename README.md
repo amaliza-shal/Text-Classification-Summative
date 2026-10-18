@@ -6,7 +6,7 @@ Assigning Kinyarwanda news articles to one of 14 topics (politics, sport, econom
 
 | | |
 |---|---|
-| Author | Shlom Amaliza |
+| Author | Shalom Amaliza |
 | Live demo | https://kinnews-classifier-rw.streamlit.app/ |
 | Trained models | https://huggingface.co/amaliza-shal/kinnews-models |
 | Demo video | https://www.awesomescreenshot.com/video/57561444?key=39fc55a72dbe83965f8a82d49a47e7f2 |
