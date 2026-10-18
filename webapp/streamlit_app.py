@@ -87,6 +87,12 @@ CSS = """
 .step .n {font-size: .75rem; font-weight: 700; color: #0077b6; letter-spacing: .08em;} .step .t {font-weight: 700; color: #0b0b0b; margin: 4px 0;}
 .step .d {font-size: .88rem; color: #52514e;}
 @media (max-width: 760px) {.cards, .compare {grid-template-columns: 1fr;} .tiles, .steps {grid-template-columns: repeat(2, 1fr);}}
+.cards.three {grid-template-columns: repeat(3, 1fr);}
+.topics {display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;}
+.topic-chip {background: #fff; border: 1px solid #e6eaef; border-radius: 999px; padding: 6px 12px; font-size: .9rem;
+             color: #0b0b0b; text-transform: capitalize;}
+.topic-chip i {color: #52514e; font-style: normal; text-transform: none; margin-left: 2px;}
+@media (max-width: 760px) {.cards.three {grid-template-columns: 1fr;}}
 .foot {text-align: center; color: #52514e; font-size: .85rem; margin-top: 30px;}
 .foot a {color: #0077b6; text-decoration: none;}
 div[data-testid="stTabs"] button p {font-size: 1rem; font-weight: 600;}
@@ -173,7 +179,35 @@ st.markdown(f"""
  <div class="stat"><b>8</b><span>experiments compared</span></div>
 </div></div>""", unsafe_allow_html=True)
 
-tab_classify, tab_results, tab_data, tab_about = st.tabs(["🔍 Classify", "📊 Results", "🧹 The data", "ℹ️ How it works"])
+tab_overview, tab_classify, tab_results, tab_data = st.tabs(["🏠 Overview", "🔍 Classify", "📊 Results", "🧹 The data"])
+
+with tab_overview:
+    st.markdown("""<div class="cards three">
+     <div class="card"><div class="t">📰 The problem</div><div class="d">Rwandan news sites publish Kinyarwanda articles every
+     day, but sorting them by topic is done by hand and almost no NLP tools exist for the language.</div></div>
+     <div class="card"><div class="t">🌍 Why Kinyarwanda</div><div class="d">The project had to use an African language.
+     Kinyarwanda is Rwanda's national language, has little labelled data, and has a real labelled news dataset (KINNEWS).</div></div>
+     <div class="card"><div class="t">👥 Who it's for</div><div class="d">Newsrooms tagging articles, archives indexing
+     Kinyarwanda content, and researchers who need topic labels.</div></div>
+    </div>""", unsafe_allow_html=True)
+    st.markdown('<div class="h">The 14 topics</div><div class="topics">' + "".join(
+        f'<span class="topic-chip">{ICONS[l]} {l} <i>{KIN_LABELS[l]}</i></span>' for l in LABELS) + "</div>",
+        unsafe_allow_html=True)
+    st.markdown("""<div class="h">How it works</div><div class="steps">
+     <div class="step"><div class="n">STEP 1</div><div class="t">Clean</div><div class="d">Remove duplicates, fix broken
+     encoding, lowercase, drop numbers and punctuation.</div></div>
+     <div class="step"><div class="n">STEP 2</div><div class="t">Represent</div><div class="d">Final model: character 2–5-grams
+     weighted by TF-IDF, which match Kinyarwanda's many word forms.</div></div>
+     <div class="step"><div class="n">STEP 3</div><div class="t">Score</div><div class="d">A linear SVM gives a score to each of
+     the 14 topics.</div></div>
+     <div class="step"><div class="n">STEP 4</div><div class="t">Predict</div><div class="d">The highest score is the topic;
+     the top 5 show the alternatives.</div></div>
+    </div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="h">Good to know</div><div class="cards three">
+     <div class="card"><div class="d">Trained on Rwandan news, so social media and other genres are out of scope.</div></div>
+     <div class="card"><div class="d">Rare topics (30–200 training articles) are less reliable than common ones.</div></div>
+     <div class="card"><div class="d">Some topics overlap, such as culture/history and fashion/entertainment.</div></div>
+    </div>""", unsafe_allow_html=True)
 
 with tab_classify:
     st.pills("Try a real article from the test set", list(EXAMPLES), key="example", on_change=set_example)
@@ -283,25 +317,6 @@ with tab_data:
                     .configure_axis(gridColor="#eef0f2", domainColor="#c9ccd1", labelColor="#52514e",
                                     titleColor="#52514e").configure_view(stroke=None), width="stretch")
     st.caption("Source: KINNEWS (Niyongabo et al., 2020), real Rwandan news, MIT licence.")
-
-with tab_about:
-    st.markdown("""<div class="steps">
-     <div class="step"><div class="n">STEP 1</div><div class="t">Clean</div><div class="d">Fix broken encoding,
-     lowercase, drop numbers and punctuation, split <i>n'abana</i> → <i>n abana</i>.</div></div>
-     <div class="step"><div class="n">STEP 2</div><div class="t">Represent</div><div class="d">E3: character 2–5-grams
-     weighted by TF-IDF. E5: Word2Vec embeddings read by a BiLSTM.</div></div>
-     <div class="step"><div class="n">STEP 3</div><div class="t">Score</div><div class="d">The model gives a score to each of
-     the 14 topics.</div></div>
-     <div class="step"><div class="n">STEP 4</div><div class="t">Predict</div><div class="d">The highest score is the topic;
-     the top 5 show the alternatives.</div></div>
-    </div>""", unsafe_allow_html=True)
-    st.markdown("""
-#### Limitations
-- Trained on Rwandan news, so social media and other genres are out of scope.
-- Rare topics (30–200 training articles) are less reliable.
-- Some topics overlap, such as culture/history and fashion/entertainment.
-- The fine-tuned Transformer (E6) isn't in the app: it scored lowest and needs more memory than free hosting gives.
-""")
 
 st.markdown(f'<div class="foot">Data: KINNEWS (Niyongabo et al., 2020) · <a href="{GITHUB}">Code &amp; notebook</a> · '
             f'<a href="https://huggingface.co/{MODEL_REPO}">Models</a></div>', unsafe_allow_html=True)
