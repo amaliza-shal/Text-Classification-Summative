@@ -9,7 +9,7 @@ Assigning Kinyarwanda news articles to one of 14 topics (politics, sport, econom
 | Author | Shlom Amaliza |
 | Live demo | https://kinnews-classifier-rw.streamlit.app/ |
 | Trained models | https://huggingface.co/amaliza-shal/kinnews-models |
-| Demo video | _link added on submission_ |
+| Demo video | https://www.awesomescreenshot.com/video/57561444?key=39fc55a72dbe83965f8a82d49a47e7f2 |
 
 ## Problem
 
@@ -171,17 +171,3 @@ streamlit run webapp/streamlit_app.py   # http://localhost:8501
 Then open `kinnews_classification.ipynb` for the analysis and figures, or open it directly in VS Code / Jupyter with the `.venv` kernel and run all cells. Cells that train the BiLSTMs and Transformers load the saved checkpoints if they exist; set `RETRAIN = True` to train from scratch.
 
 **Deployment.** The app runs on Streamlit Community Cloud (https://kinnews-classifier-rw.streamlit.app/) from `webapp/streamlit_app.py`, with Python 3.11 and `webapp/requirements.txt`. The trained models are downloaded from https://huggingface.co/amaliza-shal/kinnews-models (uploaded with `python upload_models.py` after `hf auth login`).
-
-All random seeds are fixed to 42.
-
-## References
-
-- Niyongabo, R. A., Qu, H., Kreutzer, J., & Huang, L. (2020). KINNEWS and KIRNEWS: Benchmarking cross-lingual text classification for Kinyarwanda and Kirundi. *COLING 2020*.
-- Alabi, J. O., Adelani, D. I., Mosbach, M., & Klakow, D. (2022). Adapting pre-trained language models to African languages via multilingual adaptive fine-tuning. *COLING 2022*.
-- Conneau, A., et al. (2020). Unsupervised cross-lingual representation learning at scale. *ACL 2020*.
-- Wang, W., et al. (2021). MiniLMv2: Multi-head self-attention relation distillation for compressing pretrained Transformers. *Findings of ACL 2021*.
-- Mikolov, T., Sutskever, I., Chen, K., Corrado, G., & Dean, J. (2013). Distributed representations of words and phrases and their compositionality. *NeurIPS 2013*.
-- Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. *Neural Computation, 9*(8).
-- Bahdanau, D., Cho, K., & Bengio, Y. (2015). Neural machine translation by jointly learning to align and translate. *ICLR 2015*.
-- Pedregosa, F., et al. (2011). Scikit-learn: Machine learning in Python. *JMLR, 12*.
-- Wolf, T., et al. (2020). Transformers: State-of-the-art natural language processing. *EMNLP 2020: System Demonstrations*.
