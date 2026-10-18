@@ -6,7 +6,8 @@ Assigning Kinyarwanda news articles to one of 14 topics (politics, sport, econom
 
 | | |
 |---|---|
-| Live demo | _add Hugging Face Space link_ |
+| Live demo | [[APP_LINK]] |
+| Trained models | https://huggingface.co/amaliza-shal/kinnews-models |
 | Demo video | _add link_ |
 
 ## Problem
@@ -120,7 +121,8 @@ Main observations (E3 unless stated otherwise):
 | 128 tokens and frozen embeddings | Needed to fit training into 8 GB RAM on a CPU; the trade-off is documented as a limitation. |
 | Stopping E7 and E8 early | Both stayed at chance level on validation; running them longer wouldn't change the conclusion and the deadline was close. |
 | Final model = E3 | Best accuracy and macro-F1, fast, small, and easy to explain. |
-| Gradio on Hugging Face Spaces | The assignment allows Gradio. The free Spaces CPU tier has enough memory for all three models plus PyTorch, the app gets a public link, and the models live next to the code. |
+| Streamlit Community Cloud + Hugging Face model repo | Streamlit is allowed by the assignment and hosts apps from GitHub for free with a permanent link. Hugging Face app hosting now needs a paid plan, but model repos are still free, so the trained models live there and the app downloads them at start-up. |
+| Only E3 and E5 in the live app | E3 is the final model and E5 is shown for comparison. E6 is the weakest model (0.390 macro-F1) and needs ~0.5 GB more memory, which risks crashing on free hosting. It stays in the notebook and the model repo. |
 
 ## Existing Kinyarwanda news classifiers
 
@@ -140,8 +142,9 @@ src/
   finetune.py        E6-E8
   inference.py       loads saved models and scores new text (used by app and notebook)
 kinnews_classification.ipynb     the full project, step by step, with outputs
-app.py               Gradio web app
-deploy_space.py      uploads the app to a Hugging Face Space
+webapp/streamlit_app.py          the web app (Streamlit)
+webapp/requirements.txt          lightweight dependencies for the hosted app
+upload_models.py                 uploads the trained models to the Hugging Face model repo
 results/             metrics, per-model reports and predictions, training histories, figures
 report/              the written report (HTML and PDF)
 ```
@@ -161,12 +164,12 @@ python -m src.bilstm --emb w2v     # E5
 python -m src.finetune --model Davlan/afro-xlmr-mini --name E6_afroxlmr_mini                               # ~1.5-2.5 h on CPU
 python -m src.finetune --model nreimers/mMiniLMv2-L12-H384-distilled-from-XLMR-Large --name E7_mminilm   # E7
 python -m src.finetune --model Davlan/afro-xlmr-mini --name E8_afroxlmr_mini_lr1.5e-4 --lr 1.5e-4          # E8
-python app.py                      # http://127.0.0.1:7860
+streamlit run webapp/streamlit_app.py   # http://localhost:8501
 ```
 
 Then open `kinnews_classification.ipynb` for the analysis and figures, or open it directly in VS Code / Jupyter with the `.venv` kernel and run all cells. Cells that train the BiLSTMs and Transformers load the saved checkpoints if they exist; set `RETRAIN = True` to train from scratch.
 
-To deploy: `hf auth login`, then `python deploy_space.py --space <username>/kinnews-classifier`.
+**Deployment.** The app runs on Streamlit Community Cloud ([[APP_LINK]]) from `webapp/streamlit_app.py`, with Python 3.11 and `webapp/requirements.txt`. The trained models are downloaded from https://huggingface.co/amaliza-shal/kinnews-models (uploaded with `python upload_models.py` after `hf auth login`).
 
 All random seeds are fixed to 42.
 

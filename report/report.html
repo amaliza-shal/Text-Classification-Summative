@@ -33,7 +33,7 @@
 <div class="links">
 <b>GitHub repository:</b> https://github.com/amaliza-shal/Text-Classification-Summative<br>
 <b>Demo video:</b> [[VIDEO_LINK]]<br>
-<b>Live system:</b> [[SPACE_LINK]]
+<b>Live system:</b> [[APP_LINK]]
 </div>
 
 <h2>1. Abstract</h2>
@@ -126,7 +126,7 @@
 <p>This matches what others have found. Data quality and duplication can inflate reported scores (Lee et al., 2022). Small, unbalanced, cross-source data limits all model families, and sub-word information is important for morphologically rich languages, which is the motivation for KinyaBERT's morphology-aware design (Nzeyimana &amp; Niyongabo Rubungo, 2022).</p>
 
 <h2>8. Deployment</h2>
-<p>The final system is a Gradio web application (<code>app.py</code>) deployed on Hugging Face Spaces ([[SPACE_LINK]]). The user pastes Kinyarwanda text and chooses a model: the fine-tuned Transformer, the character-n-gram SVM or the BiLSTM. The app applies the same preprocessing functions used in training (<code>src/preprocess.py</code>), runs the saved model through <code>src/inference.py</code>, and shows the predicted topic in English and Kinyarwanda with a confidence bar, the top five topics, and the predictions of all models side by side. A warning appears for very short inputs and for low-confidence predictions. The app includes examples from the test set with their true labels, so both correct and incorrect predictions can be demonstrated, and Results and About tabs explain the models and their limitations. It runs locally with <code>python app.py</code>.</p>
+<p>The final system is a Streamlit web application (<code>webapp/streamlit_app.py</code>) hosted on Streamlit Community Cloud ([[APP_LINK]]). We first planned to use Hugging Face Spaces, but hosting interactive apps there now requires a paid plan, so the app is hosted on Streamlit's free tier, which the assignment allows. The trained models are stored in a free Hugging Face model repository (https://huggingface.co/amaliza-shal/kinnews-models), and the app downloads them when it starts. The user pastes Kinyarwanda text or loads one of six test-set examples, and chooses a model: the final character-n-gram SVM (E3, the default) or the BiLSTM (E5). The app applies the same preprocessing functions used in training (<code>src/preprocess.py</code>), runs the saved model through <code>src/inference.py</code>, and shows the predicted topic in English and Kinyarwanda with a score bar, the top five topics, and both models' predictions side by side. For the examples it also shows whether the prediction matches the dataset label, so both correct and incorrect cases can be demonstrated. Warnings appear for very short inputs and low-confidence predictions. Results and About tabs show the experiment table, the per-class F1 figure and the system's limitations. The fine-tuned Transformer (E6) is not in the live app: it is the weakest model and needs more memory than the free hosting provides.</p>
 
 <h2>9. Limitations and Future Work</h2>
 <p><b>Data.</b> After deduplication there are only 6.7k training articles, and six topics have fewer than 200. The test labels follow each website's own category definitions, so part of the remaining error is label noise, and each article gets a single topic even when topics overlap. <b>Models.</b> Because of the CPU-only setup, the Transformers see only the first 128 subword tokens (about 50 words, while the median article has about 300) and their embeddings are frozen. With a GPU, full fine-tuning on 512-token inputs, or splitting long articles into chunks, could change the ranking. <b>Evaluation.</b> Each configuration was run once with one seed and without a hyperparameter search, so differences below about one macro-F1 point should not be over-interpreted. The SVM's confidence scores in the app are not calibrated probabilities. <b>Future work.</b> Next steps would be longer-context and morphology-aware models (KinyaBERT), training with more news sources, or adapting to new sources with their unlabelled text, multi-label topics or merged overlapping categories, and a proper learning-rate search (between 5e-5 and 1.5e-4) so that AfroXLMR-mini and mMiniLM can be compared at a setting where both learn.</p>
@@ -154,7 +154,7 @@
 <li>Wang, W., Bao, H., Huang, S., Dong, L., &amp; Wei, F. (2021). MiniLMv2: Multi-head self-attention relation distillation for compressing pretrained Transformers. In <i>Findings of ACL 2021</i> (pp. 2140-2151).</li>
 <li>Wolf, T., et al. (2020). Transformers: State-of-the-art natural language processing. In <i>Proceedings of EMNLP 2020: System Demonstrations</i> (pp. 38-45).</li>
 <li>Yang, Z., Yang, D., Dyer, C., He, X., Smola, A., &amp; Hovy, E. (2016). Hierarchical attention networks for document classification. In <i>Proceedings of NAACL-HLT 2016</i> (pp. 1480-1489).</li>
-<li>Abid, A., et al. (2019). Gradio: Hassle-free sharing and testing of ML models in the wild. <i>arXiv:1906.02569</i>.</li>
+<li>Streamlit (2026). Streamlit documentation and Community Cloud. https://docs.streamlit.io</li>
 <li>Hugging Face Hub model and dataset cards (accessed October 2026): Davlan/afro-xlmr-mini; nreimers/mMiniLMv2-L12-H384-distilled-from-XLMR-Large; andreniyongabo/kinnews_kirnews; henryparfait/kinnews-topic-classifier; Seziberagabriel/kinyarwanda-news-classifier. https://huggingface.co</li>
 </ol>
 </body>
