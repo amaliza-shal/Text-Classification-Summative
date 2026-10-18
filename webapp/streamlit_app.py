@@ -368,5 +368,5 @@ with tab_data:
                                     titleColor="#52514e").configure_view(stroke=None).configure(background="transparent"), width="stretch")
     st.caption("Source: KINNEWS (Niyongabo et al., 2020), real Rwandan news, MIT licence.")
 
-st.markdown(f'<div class="foot">Data: KINNEWS (Niyongabo et al., 2020) · <a href="{GITHUB}">Code &amp; notebook</a> · '
+st.markdown(f'<div class="foot">Built by Shlom Amaliza · Data: KINNEWS (Niyongabo et al., 2020) · <a href="{GITHUB}">Code &amp; notebook</a> · '
             f'<a href="https://huggingface.co/{MODEL_REPO}">Models</a></div>', unsafe_allow_html=True)

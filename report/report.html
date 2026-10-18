@@ -29,12 +29,12 @@
 <body>
 
 <h1>Kinyarwanda News Topic Classification:<br>Baselines, Recurrent Models and African-Language Transformers on a Deduplicated KINNEWS</h1>
-<div class="sub">[[YOUR FULL NAME]] &middot; African Leadership University &middot; a.mihigo1@alustudent.com</div>
+<div class="sub">Shlom Amaliza &middot; African Leadership University &middot; a.mihigo1@alustudent.com</div>
 
 <div class="links">
 <b>GitHub repository:</b> https://github.com/amaliza-shal/Text-Classification-Summative<br>
-<b>Demo video:</b> [[VIDEO_LINK]]<br>
-<b>Live system:</b> [[APP_LINK]]
+<b>Demo video:</b> link added on submission<br>
+<b>Live system:</b> https://kinnews-classifier-rw.streamlit.app/
 </div>
 
 <h2>1. Abstract</h2>
@@ -133,7 +133,7 @@
 <p>This matches the literature: duplicates inflate scores (Lee et al., 2022), and sub-word information matters for languages like Kinyarwanda, which is why KinyaBERT is built around its morphology (Nzeyimana &amp; Niyongabo Rubungo, 2022).</p>
 
 <h2>8. Deployment</h2>
-<p>The final model is deployed as a Streamlit web app (<code>webapp/streamlit_app.py</code>) on Streamlit Community Cloud ([[APP_LINK]]). Hugging Face app hosting now requires a paid plan, so the trained models are stored in a free Hugging Face model repository (https://huggingface.co/amaliza-shal/kinnews-models) and downloaded by the app at start-up. The app has four pages:</p>
+<p>The final model is deployed as a Streamlit web app (<code>webapp/streamlit_app.py</code>) on Streamlit Community Cloud (https://kinnews-classifier-rw.streamlit.app/). Hugging Face app hosting now requires a paid plan, so the trained models are stored in a free Hugging Face model repository (https://huggingface.co/amaliza-shal/kinnews-models) and downloaded by the app at start-up. The app has four pages:</p>
 <ul>
 <li><b>Overview:</b> the problem, why Kinyarwanda, the 14 topics and how the system works.</li>
 <li><b>Classify:</b> paste an article or pick one of eight real test articles, then choose the final model (E3) or the BiLSTM (E5). The text is cleaned with the same code as in training, and the app shows the topic in English and Kinyarwanda, the top 5 topics and both models' answers. For test examples it shows whether the answer is correct; the "tricky case" is a real error.</li>

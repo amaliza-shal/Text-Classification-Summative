@@ -6,9 +6,10 @@ Assigning Kinyarwanda news articles to one of 14 topics (politics, sport, econom
 
 | | |
 |---|---|
-| Live demo | [[APP_LINK]] |
+| Author | Shlom Amaliza |
+| Live demo | https://kinnews-classifier-rw.streamlit.app/ |
 | Trained models | https://huggingface.co/amaliza-shal/kinnews-models |
-| Demo video | _add link_ |
+| Demo video | _link added on submission_ |
 
 ## Problem
 
@@ -169,7 +170,7 @@ streamlit run webapp/streamlit_app.py   # http://localhost:8501
 
 Then open `kinnews_classification.ipynb` for the analysis and figures, or open it directly in VS Code / Jupyter with the `.venv` kernel and run all cells. Cells that train the BiLSTMs and Transformers load the saved checkpoints if they exist; set `RETRAIN = True` to train from scratch.
 
-**Deployment.** The app runs on Streamlit Community Cloud ([[APP_LINK]]) from `webapp/streamlit_app.py`, with Python 3.11 and `webapp/requirements.txt`. The trained models are downloaded from https://huggingface.co/amaliza-shal/kinnews-models (uploaded with `python upload_models.py` after `hf auth login`).
+**Deployment.** The app runs on Streamlit Community Cloud (https://kinnews-classifier-rw.streamlit.app/) from `webapp/streamlit_app.py`, with Python 3.11 and `webapp/requirements.txt`. The trained models are downloaded from https://huggingface.co/amaliza-shal/kinnews-models (uploaded with `python upload_models.py` after `hf auth login`).
 
 All random seeds are fixed to 42.
 
