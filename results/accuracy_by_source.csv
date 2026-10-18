@@ -1,0 +1,4 @@
+source,seen in train,articles,E1_tfidf_logreg,E2_tfidf_logreg_balanced,E3_char_tfidf_svm_balanced,E4_bilstm_random,E5_bilstm_w2v,E6_afroxlmr_mini
+igihe.com,False,1201,0.558,0.602,0.679,0.59,0.669,0.521
+kigalipost.com,False,671,0.618,0.614,0.599,0.556,0.59,0.511
+muhabura.rw,True,1584,0.822,0.852,0.891,0.689,0.713,0.849
